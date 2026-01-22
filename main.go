@@ -53,7 +53,7 @@ func main() {
 	// DELETE localhost:8080/api/categories/{id}
 	http.HandleFunc("/api/categories/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
-			api.NewKategoriApi().GetKategoriById(w, r)
+			api.NewKategoriApi().GetKategoriByID(w, r)
 		} else if r.Method == "PUT" {
 			api.NewKategoriApi().UpdateKategori(w, r)
 		} else if r.Method == "DELETE" {
