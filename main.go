@@ -16,6 +16,7 @@ import (
 func main() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
+		log.Fatalf("failed to load config: %v", err)
 		return
 	}
 	db, err := database.InitDB(cfg.DBConn)
