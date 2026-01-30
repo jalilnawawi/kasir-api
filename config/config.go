@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -12,19 +14,25 @@ type Config struct {
 	DBConn string `mapstructure:"DB_CONN"`
 }
 
-func LoadConfig() Config {
+func LoadConfig() (*Config, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if _, err := os.Stat(".env"); err == nil {
 		viper.SetConfigFile(".env")
-		_ = viper.ReadInConfig()
+		err := viper.ReadInConfig()
+		if err != nil {
+			return nil, fmt.Errorf("Error loading config file: %w", err)
+		}
 	}
 
-	config := Config{
+	config := &Config{
 		Port:   viper.GetString("PORT"),
 		DBConn: viper.GetString("DB_CONN"),
 	}
 
-	return config
+	log.Printf("port : %s", config.Port)
+	log.Printf("dbConn : %s", config.DBConn)
+
+	return config, nil
 }

@@ -1,44 +1,36 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"kasir-api/api"
 	"kasir-api/config"
 	"kasir-api/config/database"
+	"kasir-api/handlers/handlers_impl"
+	"kasir-api/repositories/repositories_impl"
+	"kasir-api/routes"
+	"kasir-api/services/services_impl"
+	"log"
 	"net/http"
 )
 
 func main() {
-	cfg := config.LoadConfig()
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		return
+	}
 	db, err := database.InitDB(cfg.DBConn)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer db.Close()
 
 	/*
 		API Produk
 	*/
-
-	// GET localhost:8080/api/produk/{id}
-	// PUT localhost:8080/api/produk/{id}
-	// DELETE localhost:8080/api/produk/{id}
-	http.HandleFunc("/api/produk/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			api.NewProdukApi().GetProdukByID(w, r)
-		} else if r.Method == "PUT" {
-			api.NewProdukApi().UpdateProduk(w, r)
-		} else if r.Method == "DELETE" {
-			api.NewProdukApi().DeleteProduk(w, r)
-		}
-	})
-
-	// GET localhost:8080/api/produk
-	// POST localhost:8080/api/produk
-	http.HandleFunc("/api/produk", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			api.NewProdukApi().GetAllProduk(w, r)
-		} else if r.Method == "POST" {
-			api.NewProdukApi().CreateProduk(w, r)
-		}
-	})
+	// Init Product Handler
+	productRepository := repositories_impl.NewProductRepositoryImpl(db)
+	productService := services_impl.NewProductServiceImpl(productRepository)
+	productHandler := handlers_impl.NewProductHandlerImpl(productService)
 
 	/*
 		API Kategori
@@ -66,14 +58,9 @@ func main() {
 		}
 	})
 
-	// localhost:8080/health
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{
-			"status":  "OK",
-			"message": "API running",
-		})
-	})
+	// Setup routes
+	routes.NewRouter(productHandler)
+
 	fmt.Println("server running di localhost:8080")
 	err = http.ListenAndServe(":"+cfg.Port, nil)
 	if err != nil {
