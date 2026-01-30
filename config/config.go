@@ -27,7 +27,7 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := &Config{
-		Port:   viper.GetString("PORT"),
+		Port:   viper.GetString("APP_PORT"),
 		DBConn: viper.GetString("DB_CONN"),
 	}
 
