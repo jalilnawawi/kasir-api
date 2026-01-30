@@ -4,10 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"kasir-api/api"
+	"kasir-api/config"
+	"kasir-api/config/database"
 	"net/http"
 )
 
 func main() {
+	cfg := config.LoadConfig()
+	db, err := database.InitDB(cfg.DBConn)
+
 	/*
 		API Produk
 	*/
@@ -70,7 +75,7 @@ func main() {
 		})
 	})
 	fmt.Println("server running di localhost:8080")
-	err := http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":"+cfg.Port, nil)
 	if err != nil {
 		fmt.Println("gagal running server")
 	}

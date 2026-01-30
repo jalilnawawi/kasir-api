@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"kasir-api/model"
+	"kasir-api/models"
 	"net/http"
 	"strconv"
 	"strings"
@@ -24,7 +24,7 @@ type KategoriApiImpl struct{}
 
 func (service KategoriApiImpl) GetAllKategori(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(model.ListKategori)
+	err := json.NewEncoder(w).Encode(models.ListKategori)
 	if err != nil {
 		http.Error(w, "gagal mendapatkan kategori", http.StatusInternalServerError)
 		return
@@ -32,15 +32,15 @@ func (service KategoriApiImpl) GetAllKategori(w http.ResponseWriter, r *http.Req
 }
 
 func (service KategoriApiImpl) CreateKategori(w http.ResponseWriter, r *http.Request) {
-	var kategoriBaru model.Kategori
+	var kategoriBaru models.Kategori
 	err := json.NewDecoder(r.Body).Decode(&kategoriBaru)
 	if err != nil {
 		http.Error(w, "invalid request", http.StatusBadRequest)
 		return
 	}
 
-	kategoriBaru.ID = len(model.ListKategori) + 1
-	model.ListKategori = append(model.ListKategori, kategoriBaru)
+	kategoriBaru.ID = len(models.ListKategori) + 1
+	models.ListKategori = append(models.ListKategori, kategoriBaru)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(kategoriBaru)
@@ -58,7 +58,7 @@ func (service KategoriApiImpl) GetKategoriByID(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	for _, p := range model.ListKategori {
+	for _, p := range models.ListKategori {
 		if p.ID == id {
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(p)
@@ -78,17 +78,17 @@ func (service KategoriApiImpl) UpdateKategori(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	var updateKategori model.Kategori
+	var updateKategori models.Kategori
 	err = json.NewDecoder(r.Body).Decode(&updateKategori)
 	if err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
 
-	for i := range model.ListKategori {
-		if model.ListKategori[i].ID == id {
+	for i := range models.ListKategori {
+		if models.ListKategori[i].ID == id {
 			updateKategori.ID = id
-			model.ListKategori[i] = updateKategori
+			models.ListKategori[i] = updateKategori
 
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(updateKategori)
@@ -107,9 +107,9 @@ func (service KategoriApiImpl) DeleteKategori(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	for i, p := range model.ListKategori {
+	for i, p := range models.ListKategori {
 		if p.ID == id {
-			model.ListKategori = append(model.ListKategori[:i], model.ListKategori[i+1:]...)
+			models.ListKategori = append(models.ListKategori[:i], models.ListKategori[i+1:]...)
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(map[string]string{
 				"message": "sukses delete",

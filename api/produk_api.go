@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"kasir-api/model"
+	"kasir-api/models"
 	"net/http"
 	"strconv"
 	"strings"
@@ -24,7 +24,7 @@ type ProdukApiImpl struct{}
 
 func (service *ProdukApiImpl) GetAllProduk(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(model.ListProduk)
+	err := json.NewEncoder(w).Encode(models.ListProduk)
 	if err != nil {
 		http.Error(w, "gagal mendapatkan produk", http.StatusInternalServerError)
 		return
@@ -32,15 +32,15 @@ func (service *ProdukApiImpl) GetAllProduk(w http.ResponseWriter, r *http.Reques
 }
 
 func (service *ProdukApiImpl) CreateProduk(w http.ResponseWriter, r *http.Request) {
-	var produkBaru model.Produk
+	var produkBaru models.Produk
 	err := json.NewDecoder(r.Body).Decode(&produkBaru)
 	if err != nil {
 		http.Error(w, "invalid request", http.StatusBadRequest)
 		return
 	}
 
-	produkBaru.ID = len(model.ListProduk) + 1
-	model.ListProduk = append(model.ListProduk, produkBaru)
+	produkBaru.ID = len(models.ListProduk) + 1
+	models.ListProduk = append(models.ListProduk, produkBaru)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(produkBaru)
@@ -58,7 +58,7 @@ func (service *ProdukApiImpl) GetProdukByID(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	for _, p := range model.ListProduk {
+	for _, p := range models.ListProduk {
 		if p.ID == id {
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(p)
@@ -81,7 +81,7 @@ func (service *ProdukApiImpl) UpdateProduk(w http.ResponseWriter, r *http.Reques
 	}
 
 	// get data dari request
-	var updateProduk model.Produk
+	var updateProduk models.Produk
 	err = json.NewDecoder(r.Body).Decode(&updateProduk)
 	if err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
@@ -89,10 +89,10 @@ func (service *ProdukApiImpl) UpdateProduk(w http.ResponseWriter, r *http.Reques
 	}
 
 	// loop produk, cari id, ganti sesuai data dari request
-	for i := range model.ListProduk {
-		if model.ListProduk[i].ID == id {
+	for i := range models.ListProduk {
+		if models.ListProduk[i].ID == id {
 			updateProduk.ID = id
-			model.ListProduk[i] = updateProduk
+			models.ListProduk[i] = updateProduk
 
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(updateProduk)
@@ -112,10 +112,10 @@ func (service *ProdukApiImpl) DeleteProduk(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	// loop produk cari ID, dapet index yang mau dihapus
-	for i, p := range model.ListProduk {
+	for i, p := range models.ListProduk {
 		if p.ID == id {
 			// bikin slice baru dengan data sebelum dan sesudah index
-			model.ListProduk = append(model.ListProduk[:i], model.ListProduk[i+1:]...)
+			models.ListProduk = append(models.ListProduk[:i], models.ListProduk[i+1:]...)
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(map[string]string{
 				"message": "sukses delete",
