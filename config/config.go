@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -30,9 +29,6 @@ func LoadConfig() (*Config, error) {
 		Port:   viper.GetString("APP_PORT"),
 		DBConn: viper.GetString("DB_CONN"),
 	}
-
-	log.Printf("port : %s", config.Port)
-	log.Printf("dbConn : %s", config.DBConn)
 
 	return config, nil
 }
