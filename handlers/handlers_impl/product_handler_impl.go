@@ -2,6 +2,7 @@ package handlers_impl
 
 import (
 	"encoding/json"
+	"kasir-api/error_constant"
 	"kasir-api/handlers"
 	"kasir-api/models"
 	"kasir-api/services"
@@ -28,7 +29,7 @@ func (h *ProductHandlerImpl) GetAllProducts(w http.ResponseWriter, r *http.Reque
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(products)
 	if err != nil {
-		http.Error(w, "gagal mendapatkan produk", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedGetProduct.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -37,7 +38,7 @@ func (h *ProductHandlerImpl) CreateProduct(w http.ResponseWriter, r *http.Reques
 	var product models.Product
 	err := json.NewDecoder(r.Body).Decode(&product)
 	if err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidRequestBody.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -51,7 +52,7 @@ func (h *ProductHandlerImpl) CreateProduct(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(product)
 	if err != nil {
-		http.Error(w, "gagal menambahkan produk", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedAddProduct.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -60,7 +61,7 @@ func (h *ProductHandlerImpl) GetProductByID(w http.ResponseWriter, r *http.Reque
 	idStr := strings.TrimPrefix(r.URL.Path, "/api/produk/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidProductID.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -73,7 +74,7 @@ func (h *ProductHandlerImpl) GetProductByID(w http.ResponseWriter, r *http.Reque
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(product)
 	if err != nil {
-		http.Error(w, "gagal mendapatkan produk", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedGetProduct.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -82,14 +83,14 @@ func (h *ProductHandlerImpl) UpdateProduct(w http.ResponseWriter, r *http.Reques
 	idStr := strings.TrimPrefix(r.URL.Path, "/api/produk/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidProductID.Error(), http.StatusBadRequest)
 		return
 	}
 
 	var product models.Product
 	err = json.NewDecoder(r.Body).Decode(&product)
 	if err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidRequestBody.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -103,7 +104,7 @@ func (h *ProductHandlerImpl) UpdateProduct(w http.ResponseWriter, r *http.Reques
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(product)
 	if err != nil {
-		http.Error(w, "gagal memperbarui produk", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedUpdateProduct.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -112,7 +113,7 @@ func (h *ProductHandlerImpl) DeleteProduct(w http.ResponseWriter, r *http.Reques
 	idStr := strings.TrimPrefix(r.URL.Path, "/api/produk/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidProductID.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -126,7 +127,7 @@ func (h *ProductHandlerImpl) DeleteProduct(w http.ResponseWriter, r *http.Reques
 
 	err = json.NewEncoder(w).Encode(map[string]string{"message": "Product deleted successfully"})
 	if err != nil {
-		http.Error(w, "gagal menghapus produk", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedDeleteProduct.Error(), http.StatusInternalServerError)
 		return
 	}
 }

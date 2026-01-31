@@ -2,6 +2,7 @@ package handlers_impl
 
 import (
 	"encoding/json"
+	"kasir-api/error_constant"
 	"kasir-api/handlers"
 	"kasir-api/models"
 	"kasir-api/services"
@@ -28,7 +29,7 @@ func (h *CategoryHandlerImpl) GetAllCategories(w http.ResponseWriter, r *http.Re
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(categories)
 	if err != nil {
-		http.Error(w, "gagal mendapatkan kategori", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedGetCategory.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -37,7 +38,7 @@ func (h *CategoryHandlerImpl) CreateCategory(w http.ResponseWriter, r *http.Requ
 	var category models.Category
 	err := json.NewDecoder(r.Body).Decode(&category)
 	if err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidRequestBody.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -51,7 +52,7 @@ func (h *CategoryHandlerImpl) CreateCategory(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(category)
 	if err != nil {
-		http.Error(w, "gagal menambahkan kategori", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedAddCategory.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -73,7 +74,7 @@ func (h *CategoryHandlerImpl) GetCategoryByID(w http.ResponseWriter, r *http.Req
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(category)
 	if err != nil {
-		http.Error(w, "gagal mendapatkan kategori", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedGetCategory.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -82,14 +83,14 @@ func (h *CategoryHandlerImpl) UpdateCategory(w http.ResponseWriter, r *http.Requ
 	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "invalid category ID", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidCategoryID.Error(), http.StatusBadRequest)
 		return
 	}
 
 	var category models.Category
 	err = json.NewDecoder(r.Body).Decode(&category)
 	if err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidRequestBody.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -103,7 +104,7 @@ func (h *CategoryHandlerImpl) UpdateCategory(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(category)
 	if err != nil {
-		http.Error(w, "gagal memperbarui kategori", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedUpdateCategory.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -112,7 +113,7 @@ func (h *CategoryHandlerImpl) DeleteCategory(w http.ResponseWriter, r *http.Requ
 	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "invalid category ID", http.StatusBadRequest)
+		http.Error(w, error_constant.ErrInvalidCategoryID.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -126,7 +127,7 @@ func (h *CategoryHandlerImpl) DeleteCategory(w http.ResponseWriter, r *http.Requ
 
 	err = json.NewEncoder(w).Encode(map[string]string{"message": "Category deleted successfully"})
 	if err != nil {
-		http.Error(w, "gagal menghapus kategori", http.StatusInternalServerError)
+		http.Error(w, error_constant.ErrFailedDeleteCategory.Error(), http.StatusInternalServerError)
 		return
 	}
 }

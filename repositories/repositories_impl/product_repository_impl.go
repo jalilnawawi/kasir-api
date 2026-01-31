@@ -2,8 +2,8 @@ package repositories_impl
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
+	"kasir-api/error_constant"
 	"kasir-api/models"
 	"kasir-api/models/dto"
 	"kasir-api/repositories"
@@ -59,7 +59,7 @@ func (repo *ProductRepositoryImpl) GetByID(id int) (*dto.ProductDetailDto, error
 	var p dto.ProductDetailDto
 	err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.CategoryName)
 	if err == sql.ErrNoRows {
-		return nil, errors.New("produk tidak ditemukan")
+		return nil, error_constant.ErrProductNotFound
 	}
 
 	if err != nil {
@@ -82,7 +82,7 @@ func (repo *ProductRepositoryImpl) Update(produk *models.Product) error {
 	}
 
 	if rows == 0 {
-		return errors.New("produk tidak ditemukan")
+		return error_constant.ErrProductNotFound
 	}
 
 	return nil
@@ -101,7 +101,7 @@ func (repo *ProductRepositoryImpl) Delete(id int) error {
 	}
 
 	if rows == 0 {
-		return errors.New("produk tidak ditemukan")
+		return error_constant.ErrProductNotFound
 	}
 
 	return err
