@@ -2,6 +2,7 @@ package services_impl
 
 import (
 	"kasir-api/models"
+	"kasir-api/models/dto"
 	"kasir-api/repositories"
 	"kasir-api/services"
 )
@@ -32,4 +33,8 @@ func (s *CategoryServiceImpl) Update(kategori *models.Category) error {
 
 func (s *CategoryServiceImpl) Delete(id int) error {
 	return s.repo.Delete(id)
+}
+
+func (s *CategoryServiceImpl) GetProductListByCategoryID(categoryID int) (*dto.CategoryDetailDto, error) {
+	return s.repo.GetProductListByCategoryID(categoryID)
 }

@@ -1,6 +1,9 @@
 package services
 
-import "kasir-api/models"
+import (
+	"kasir-api/models"
+	"kasir-api/models/dto"
+)
 
 type CategoryService interface {
 	GetAll() ([]models.Category, error)
@@ -8,4 +11,5 @@ type CategoryService interface {
 	GetByID(id int) (*models.Category, error)
 	Update(kategori *models.Category) error
 	Delete(id int) error
+	GetProductListByCategoryID(categoryID int) (*dto.CategoryDetailDto, error)
 }

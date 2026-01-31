@@ -2,8 +2,11 @@ package repositories_impl
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+	"kasir-api/error_constant"
 	"kasir-api/models"
+	"kasir-api/models/dto"
 	"kasir-api/repositories"
 )
 
@@ -89,4 +92,43 @@ func (repo *CategoryRepositoryImpl) Delete(id int) error {
 		return fmt.Errorf("no category found with id %d", id)
 	}
 	return nil
+}
+
+func (repo *CategoryRepositoryImpl) GetProductListByCategoryID(categoryID int) (*dto.CategoryDetailDto, error) {
+	var categoryDetail dto.CategoryDetailDto
+
+	// Get category details
+	categoryQuery := "select id, name, description from categories where id = $1"
+	err := repo.db.QueryRow(categoryQuery, categoryID).Scan(&categoryDetail.ID, &categoryDetail.Name, &categoryDetail.Description)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, error_constant.ErrCategoryNotFound
+		}
+		return &categoryDetail, fmt.Errorf("failed to get category details: %v", err)
+	}
+
+	// Get products in the category
+	productsQuery := "select id, name, price, stock from products where category_id = $1"
+	rows, err := repo.db.Query(productsQuery, categoryID)
+	if err != nil {
+		return &categoryDetail, fmt.Errorf("failed to get products: %v", err)
+	}
+	defer rows.Close()
+
+	products := make([]dto.ProductDto, 0)
+	for rows.Next() {
+		var prod dto.ProductDto
+		err := rows.Scan(&prod.ID, &prod.Name, &prod.Price, &prod.Stock)
+		if err != nil {
+			return &categoryDetail, fmt.Errorf("failed to scan product row: %v", err)
+		}
+		products = append(products, prod)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating products: %w", err)
+	}
+
+	categoryDetail.ProductList = products
+	return &categoryDetail, nil
 }

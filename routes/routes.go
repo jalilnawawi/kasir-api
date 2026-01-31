@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"kasir-api/handlers"
 	"net/http"
+	"strings"
 )
 
 func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.CategoryHandler) {
@@ -64,15 +65,30 @@ func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.
 	// PUT localhost:8080/api/categories/{id}
 	// DELETE localhost:8080/api/categories/{id}
 	http.HandleFunc("/api/categories/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			categoryHandler.GetCategoryByID(w, r)
-		case http.MethodPut:
-			categoryHandler.UpdateCategory(w, r)
-		case http.MethodDelete:
-			categoryHandler.DeleteCategory(w, r)
-		default:
+		path := r.URL.Path
+
+		if strings.HasSuffix(path, "/products") {
+			if r.Method == http.MethodGet {
+				categoryHandler.GetProductListByCategoryID(w, r)
+				return
+			}
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			return
+		}
+
+		categoryPath := strings.TrimPrefix(path, "/api/categories/")
+		if categoryPath != "" && !strings.Contains(path, "/products") {
+			switch r.Method {
+			case http.MethodGet:
+				categoryHandler.GetCategoryByID(w, r)
+			case http.MethodPut:
+				categoryHandler.UpdateCategory(w, r)
+			case http.MethodDelete:
+				categoryHandler.DeleteCategory(w, r)
+			default:
+				http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			}
+			return
 		}
 	})
 }

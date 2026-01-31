@@ -131,3 +131,27 @@ func (h *CategoryHandlerImpl) DeleteCategory(w http.ResponseWriter, r *http.Requ
 		return
 	}
 }
+
+func (h *CategoryHandlerImpl) GetProductListByCategoryID(w http.ResponseWriter, r *http.Request) {
+	categoryPath := strings.TrimPrefix(r.URL.Path, "/api/categories/")
+	idStr := strings.TrimSuffix(categoryPath, "/products")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, error_constant.ErrInvalidCategoryID.Error(), http.StatusBadRequest)
+		return
+	}
+
+	categoryDetailDto, err := h.service.GetProductListByCategoryID(id)
+	if err != nil {
+		http.Error(w, error_constant.ErrCategoryNotFound.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	err = json.NewEncoder(w).Encode(categoryDetailDto)
+	if err != nil {
+		http.Error(w, error_constant.ErrFailedGetCategory.Error(), http.StatusInternalServerError)
+		return
+	}
+}

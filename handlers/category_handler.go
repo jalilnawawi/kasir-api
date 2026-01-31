@@ -8,4 +8,5 @@ type CategoryHandler interface {
 	GetCategoryByID(w http.ResponseWriter, r *http.Request)
 	UpdateCategory(w http.ResponseWriter, r *http.Request)
 	DeleteCategory(w http.ResponseWriter, r *http.Request)
+	GetProductListByCategoryID(w http.ResponseWriter, r *http.Request)
 }
