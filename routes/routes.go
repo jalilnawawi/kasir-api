@@ -18,9 +18,9 @@ func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.
 	})
 
 	// Product routes
-	// GET localhost:8080/api/produk
-	// POST localhost:8080/api/produk
-	http.HandleFunc("/api/produk", func(w http.ResponseWriter, r *http.Request) {
+	// GET localhost:8080/api/products
+	// POST localhost:8080/api/products
+	http.HandleFunc("/api/products", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			productHandler.GetAllProducts(w, r)
@@ -31,10 +31,10 @@ func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.
 		}
 	})
 
-	// GET localhost:8080/api/produk/{id}
-	// PUT localhost:8080/api/produk/{id}
-	// DELETE localhost:8080/api/produk/{id}
-	http.HandleFunc("/api/produk/", func(w http.ResponseWriter, r *http.Request) {
+	// GET localhost:8080/api/products/{id}
+	// PUT localhost:8080/api/products/{id}
+	// DELETE localhost:8080/api/products/{id}
+	http.HandleFunc("/api/products/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			productHandler.GetProductByID(w, r)

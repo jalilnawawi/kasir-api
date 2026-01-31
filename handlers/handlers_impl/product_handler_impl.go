@@ -58,7 +58,7 @@ func (h *ProductHandlerImpl) CreateProduct(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *ProductHandlerImpl) GetProductByID(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/produk/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/products/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, error_constant.ErrInvalidProductID.Error(), http.StatusBadRequest)
@@ -80,7 +80,7 @@ func (h *ProductHandlerImpl) GetProductByID(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *ProductHandlerImpl) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/produk/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/products/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, error_constant.ErrInvalidProductID.Error(), http.StatusBadRequest)
@@ -110,7 +110,7 @@ func (h *ProductHandlerImpl) UpdateProduct(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *ProductHandlerImpl) DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/produk/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/products/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, error_constant.ErrInvalidProductID.Error(), http.StatusBadRequest)
