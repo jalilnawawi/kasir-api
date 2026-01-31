@@ -1,0 +1,11 @@
+package repositories
+
+import "kasir-api/models"
+
+type CategoryRepository interface {
+	GetAll() ([]models.Category, error)
+	Create(kategori *models.Category) error
+	GetByID(id int) (*models.Category, error)
+	Update(kategori *models.Category) error
+	Delete(id int) error
+}

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func NewRouter(productHandler handlers.ProductHandler) {
+func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.CategoryHandler) {
 	// localhost:8080/health
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -16,7 +16,7 @@ func NewRouter(productHandler handlers.ProductHandler) {
 		})
 	})
 
-	// Produk routes
+	// Product routes
 	// GET localhost:8080/api/produk
 	// POST localhost:8080/api/produk
 	http.HandleFunc("/api/produk", func(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +41,36 @@ func NewRouter(productHandler handlers.ProductHandler) {
 			productHandler.UpdateProduct(w, r)
 		case http.MethodDelete:
 			productHandler.DeleteProduct(w, r)
+		default:
+			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		}
+	})
+
+	// Category routes
+	// GET localhost:8080/api/categories
+	// POST localhost:8080/api/categories
+	http.HandleFunc("/api/categories", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			categoryHandler.GetAllCategories(w, r)
+		case http.MethodPost:
+			categoryHandler.CreateCategory(w, r)
+		default:
+			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		}
+	})
+
+	// GET localhost:8080/api/categories/{id}
+	// PUT localhost:8080/api/categories/{id}
+	// DELETE localhost:8080/api/categories/{id}
+	http.HandleFunc("/api/categories/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			categoryHandler.GetCategoryByID(w, r)
+		case http.MethodPut:
+			categoryHandler.UpdateCategory(w, r)
+		case http.MethodDelete:
+			categoryHandler.DeleteCategory(w, r)
 		default:
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		}

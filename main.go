@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"kasir-api/api"
 	"kasir-api/config"
 	"kasir-api/config/database"
 	"kasir-api/handlers/handlers_impl"
@@ -36,31 +35,13 @@ func main() {
 	/*
 		API Kategori
 	*/
-	// GET localhost:8080/api/categories
-	// POST localhost:8080/api/categories
-	http.HandleFunc("/api/categories", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			api.NewKategoriApi().GetAllKategori(w, r)
-		} else if r.Method == "POST" {
-			api.NewKategoriApi().CreateKategori(w, r)
-		}
-	})
-
-	// GET localhost:8080/api/categories/{id}
-	// PUT localhost:8080/api/categories/{id}
-	// DELETE localhost:8080/api/categories/{id}
-	http.HandleFunc("/api/categories/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			api.NewKategoriApi().GetKategoriByID(w, r)
-		} else if r.Method == "PUT" {
-			api.NewKategoriApi().UpdateKategori(w, r)
-		} else if r.Method == "DELETE" {
-			api.NewKategoriApi().DeleteKategori(w, r)
-		}
-	})
+	// Init Category Handler
+	categoryRepository := repositories_impl.NewCategoryRepositoryImpl(db)
+	categoryService := services_impl.NewCategoryServiceImpl(categoryRepository)
+	categoryHandler := handlers_impl.NewCategoryHandlerImpl(categoryService)
 
 	// Setup routes
-	routes.NewRouter(productHandler)
+	routes.NewRouter(productHandler, categoryHandler)
 
 	fmt.Println("server running di localhost:8080")
 	err = http.ListenAndServe(":"+cfg.Port, nil)
