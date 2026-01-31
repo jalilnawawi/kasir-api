@@ -2,6 +2,7 @@ package services_impl
 
 import (
 	"kasir-api/models"
+	"kasir-api/models/dto"
 	"kasir-api/repositories"
 	"kasir-api/services"
 )
@@ -22,8 +23,8 @@ func (s *ProductServiceImpl) Create(product *models.Product) error {
 	return s.repo.Create(product)
 }
 
-func (s *ProductServiceImpl) GetById(id int) (*models.Product, error) {
-	return s.GetById(id)
+func (s *ProductServiceImpl) GetById(id int) (*dto.ProductDetailDto, error) {
+	return s.repo.GetByID(id)
 }
 
 func (s *ProductServiceImpl) Update(product *models.Product) error {
