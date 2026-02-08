@@ -99,6 +99,8 @@ func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.
 		switch r.Method {
 		case http.MethodPost:
 			transactionHandler.HandleCheckout(w, r)
+		case http.MethodGet:
+			transactionHandler.GetAllTransaction(w, r)
 		default:
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		}

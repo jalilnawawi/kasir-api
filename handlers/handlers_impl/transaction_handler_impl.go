@@ -2,6 +2,7 @@ package handlers_impl
 
 import (
 	"encoding/json"
+	"kasir-api/error_constant"
 	"kasir-api/handlers"
 	"kasir-api/models/dto"
 	"kasir-api/services"
@@ -41,6 +42,21 @@ func (h *TransactionHandlerImpl) Checkout(w http.ResponseWriter, r *http.Request
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(transaction)
 	if err != nil {
+		return
+	}
+}
+
+func (h *TransactionHandlerImpl) GetAllTransaction(w http.ResponseWriter, r *http.Request) {
+	transactions, err := h.service.GetAllTransaction()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(transactions)
+	if err != nil {
+		http.Error(w, error_constant.ErrFailedGetCategory.Error(), http.StatusInternalServerError)
 		return
 	}
 }

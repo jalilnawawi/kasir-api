@@ -18,3 +18,7 @@ func NewTransactionServiceImpl(repository repositories.TransactionRepository) se
 func (s *TransactionServiceImpl) Checkout(items []dto.CheckoutItem) (*models.Transaction, error) {
 	return s.repository.CreateTransaction(items)
 }
+
+func (s *TransactionServiceImpl) GetAllTransaction() (*[]dto.TransactionDto, error) {
+	return s.repository.GetAllTransaction()
+}

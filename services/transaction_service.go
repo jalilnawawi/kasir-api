@@ -7,4 +7,5 @@ import (
 
 type TransactionService interface {
 	Checkout(items []dto.CheckoutItem) (*models.Transaction, error)
+	GetAllTransaction() (*[]dto.TransactionDto, error)
 }
