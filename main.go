@@ -47,8 +47,15 @@ func main() {
 	transactionService := services_impl.NewTransactionServiceImpl(transactionRepository)
 	transactionHandler := handlers_impl.NewTransactionHandlerImpl(transactionService)
 
+	/*
+		API Report
+	*/
+	reportRepository := repositories_impl.NewReportRepositoryImpl(db)
+	reportService := services_impl.NewReportServiceImpl(reportRepository)
+	reportHandler := handlers_impl.NewReportHandlerImpl(reportService)
+
 	// Setup routes
-	routes.NewRouter(productHandler, categoryHandler, transactionHandler)
+	routes.NewRouter(productHandler, categoryHandler, transactionHandler, reportHandler)
 
 	fmt.Println("server running di localhost:8080")
 	err = http.ListenAndServe(":"+cfg.Port, nil)

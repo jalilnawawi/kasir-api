@@ -7,7 +7,12 @@ import (
 	"strings"
 )
 
-func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.CategoryHandler, transactionHandler handlers.TransactionHandler) {
+func NewRouter(
+	productHandler handlers.ProductHandler,
+	categoryHandler handlers.CategoryHandler,
+	transactionHandler handlers.TransactionHandler,
+	reportHandler handlers.ReportHandler,
+) {
 	// localhost:8080/health
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -104,5 +109,16 @@ func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.
 		default:
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		}
+	})
+
+	// Report routes
+	// GET localhost:8080/api/report/hari-ini
+	http.HandleFunc("/api/report", func(w http.ResponseWriter, r *http.Request) {
+		reportHandler.GetReportByDate(w, r)
+	})
+
+	// GET localhost:8080/api/report/hari-ini
+	http.HandleFunc("/api/report/hari-ini", func(w http.ResponseWriter, r *http.Request) {
+		reportHandler.GetReportToday(w, r)
 	})
 }
