@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.CategoryHandler) {
+func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.CategoryHandler, transactionHandler handlers.TransactionHandler) {
 	// localhost:8080/health
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -89,6 +89,18 @@ func NewRouter(productHandler handlers.ProductHandler, categoryHandler handlers.
 				http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 			}
 			return
+		}
+	})
+
+	// Checkout routes
+	// GET localhost:8080/api/checkout
+	// POST localhost:8080/api/checkout
+	http.HandleFunc("/api/checkout", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodPost:
+			transactionHandler.HandleCheckout(w, r)
+		default:
+			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		}
 	})
 }
