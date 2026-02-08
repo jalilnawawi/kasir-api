@@ -6,7 +6,7 @@ import (
 )
 
 type ProductRepository interface {
-	GetAll() ([]models.Product, error)
+	GetAll(nameFilter string) ([]models.Product, error)
 	Create(produk *models.Product) error
 	GetByID(id int) (*dto.ProductDetailDto, error)
 	Update(produk *models.Product) error

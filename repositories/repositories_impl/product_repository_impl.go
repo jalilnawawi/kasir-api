@@ -17,9 +17,16 @@ func NewProductRepositoryImpl(db *sql.DB) repositories.ProductRepository {
 	return &ProductRepositoryImpl{db: db}
 }
 
-func (repo *ProductRepositoryImpl) GetAll() ([]models.Product, error) {
-	query := "SELECT id, name, price, stock, category_id FROM products"
-	rows, err := repo.db.Query(query)
+func (repo *ProductRepositoryImpl) GetAll(nameFilter string) ([]models.Product, error) {
+	query := "SELECT id, name, price, stock, category_id FROM products p"
+
+	args := []interface{}{}
+	if nameFilter != "" {
+		query += " WHERE p.name ILIKE $1"
+		args = append(args, "%"+nameFilter+"%")
+	}
+
+	rows, err := repo.db.Query(query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}

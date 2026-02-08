@@ -15,8 +15,8 @@ func NewProductServiceImpl(repo repositories.ProductRepository) services.Product
 	return &ProductServiceImpl{repo: repo}
 }
 
-func (s *ProductServiceImpl) GetAll() ([]models.Product, error) {
-	return s.repo.GetAll()
+func (s *ProductServiceImpl) GetAll(name string) ([]models.Product, error) {
+	return s.repo.GetAll(name)
 }
 
 func (s *ProductServiceImpl) Create(product *models.Product) error {

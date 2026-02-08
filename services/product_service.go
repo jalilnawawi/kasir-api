@@ -6,7 +6,7 @@ import (
 )
 
 type ProductService interface {
-	GetAll() ([]models.Product, error)
+	GetAll(name string) ([]models.Product, error)
 	Create(product *models.Product) error
 	GetById(id int) (*dto.ProductDetailDto, error)
 	Update(product *models.Product) error
